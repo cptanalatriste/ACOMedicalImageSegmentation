@@ -38,22 +38,19 @@ public class AntColony {
 
 		int antCounter = 0;
 		for (Ant ant : antColony) {
-			System.out.println("Ant " + antCounter + " is building a partition ...");
-			int pixelCounter = environment.getNumberOfPixels();
+			System.out.println("Ant " + antCounter
+					+ " is building a partition ...");
 			for (int i = 0; i < environment.getImageGraph().length; i++) {
 				for (int j = 0; j < environment.getImageGraph()[0].length; j++) {
 					ClusteredPixel nextPixel = ant.selectedPixelAssignment(i,
 							j, environment.getPheromoneTrails(),
 							environment.getImageGraph());
-					//System.out.println("Ant " + antCounter + ": " + nextPixel
-					//		+ ". Left " + (pixelCounter - 1) + " to end.");
 					if (nextPixel == null) {
 						throw new Exception(
 								"No pixel was selected, for ant with path: "
 										+ ant.pathAsString());
 					}
 					ant.addAsignmentToSolution(nextPixel);
-					pixelCounter--;
 				}
 			}
 			if (depositPheromone) {
@@ -87,7 +84,7 @@ public class AntColony {
 		}
 	}
 
-	private void depositPheromoneInAntPath(Ant ant) throws Exception {
+	public void depositPheromoneInAntPath(Ant ant) throws Exception {
 
 		double contribution = 1 / ant.getPartitionQuality(environment
 				.getImageGraph());
@@ -121,7 +118,7 @@ public class AntColony {
 		}
 	}
 
-	private Ant getBestAnt() {
+	public Ant getBestAnt() {
 		Ant bestAnt = antColony.get(0);
 		for (Ant ant : antColony) {
 			if (ant.getPartitionQuality(environment.getImageGraph()) < bestAnt
@@ -157,6 +154,15 @@ public class AntColony {
 		return bestPartition;
 	}
 
-	
-	
+	public void setBestPartitionQuality(double bestPartitionQuality) {
+		this.bestPartitionQuality = bestPartitionQuality;
+	}
+
+	public Environment getEnvironment() {
+		return environment;
+	}
+
+	public void setAntColony(List<Ant> antColony) {
+		this.antColony = antColony;
+	}
 }

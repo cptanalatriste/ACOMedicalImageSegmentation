@@ -4,7 +4,6 @@ import java.util.Date;
 
 import pe.edu.pucp.acoseg.ant.AntColony;
 import pe.edu.pucp.acoseg.ant.Environment;
-import pe.edu.pucp.acoseg.exper.TestSuite;
 import pe.edu.pucp.acoseg.image.ClusteredPixel;
 import pe.edu.pucp.acoseg.image.ImageFileHelper;
 
@@ -96,13 +95,15 @@ public class ACOImageSegmentation {
 			System.out.println("Generating images per cluster");
 			for (int i = 0; i < ProblemConfiguration.NUMBER_OF_CLUSTERS; i++) {
 				// TODO(cgavidia): For now
-				/*ImageFileHelper.generateImageFromArray(null,
-						ProblemConfiguration.OUTPUT_DIRECTORY + i + "_"
-								+ ProblemConfiguration.CLUSTER_IMAGE_FILE);*/
+				/*
+				 * ImageFileHelper.generateImageFromArray(null,
+				 * ProblemConfiguration.OUTPUT_DIRECTORY + i + "_" +
+				 * ProblemConfiguration.CLUSTER_IMAGE_FILE);
+				 */
 			}
 
 			// TODO(cgavidia): For now
-			//new TestSuite().executeReport();
+			// new TestSuite().executeReport();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,14 +111,16 @@ public class ACOImageSegmentation {
 
 	}
 
-	private static int[][] generateSegmentedImage(
+	public static int[][] generateSegmentedImage(
 			ClusteredPixel[] resultingPartition, Environment environment) {
 		int[][] resultMatrix = new int[environment.getImageGraph().length][environment
 				.getImageGraph()[0].length];
 		for (ClusteredPixel clusteredPixel : resultingPartition) {
+			int cluster = clusteredPixel.getCluster();
+			int numberOfClusters = environment.getNumberOfClusters();
+			int greyScaleValue = (int) ((cluster + 1.0) / numberOfClusters * ProblemConfiguration.GRAYSCALE_MAX_RANGE);
 			resultMatrix[clusteredPixel.getxCoordinate()][clusteredPixel
-					.getyCoordinate()] = (int) ((clusteredPixel.getCluster() + 1)
-					/ environment.getNumberOfClusters() * ProblemConfiguration.GRAYSCALE_MAX_RANGE);
+					.getyCoordinate()] = greyScaleValue;
 		}
 		return resultMatrix;
 	}

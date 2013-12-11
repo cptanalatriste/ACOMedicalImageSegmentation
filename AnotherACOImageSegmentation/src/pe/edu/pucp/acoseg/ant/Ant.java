@@ -74,16 +74,7 @@ public class Ant {
 
 		// TODO(cgavidia): Calibrate this parameter
 		if (randomValue < ProblemConfiguration.BEST_CHOICE_PROBABILITY) {
-			double currentMaximumPheromoneTimesHeuristic = -1;
-			for (PosibleAssignment posiblePixel : probabilities) {
-				if (!isPixelVisited(posiblePixel.getImagePixel())
-						&& posiblePixel.getHeuristicTimesPheromone() > currentMaximumPheromoneTimesHeuristic) {
-					currentMaximumPheromoneTimesHeuristic = posiblePixel
-							.getHeuristicTimesPheromone();
-					nextPixel = posiblePixel.getImagePixel();
-				}
-			}
-			return nextPixel;
+			return getMaximumValueAssignment(probabilities);
 		} else {
 			double anotherRandomValue = random.nextDouble();
 			double total = 0;
@@ -107,7 +98,22 @@ public class Ant {
 		return nextPixel;
 	}
 
-	private List<PosibleAssignment> getProbabilities(int xCoordinate,
+	public ClusteredPixel getMaximumValueAssignment(
+			List<PosibleAssignment> probabilities) {
+		ClusteredPixel nextPixel = null;
+		double currentMaximumPheromoneTimesHeuristic = -1;
+		for (PosibleAssignment posiblePixel : probabilities) {
+			if (!isPixelVisited(posiblePixel.getImagePixel())
+					&& posiblePixel.getHeuristicTimesPheromone() > currentMaximumPheromoneTimesHeuristic) {
+				currentMaximumPheromoneTimesHeuristic = posiblePixel
+						.getHeuristicTimesPheromone();
+				nextPixel = posiblePixel.getImagePixel();
+			}
+		}
+		return nextPixel;
+	}
+
+	public List<PosibleAssignment> getProbabilities(int xCoordinate,
 			int yCoordinate, double[][] pheromoneTrails, int[][] imageGraph) {
 
 		List<PosibleAssignment> pixelsWithProbabilities = new ArrayList<PosibleAssignment>();
@@ -117,7 +123,8 @@ public class Ant {
 			ClusteredPixel currentPixel = new ClusteredPixel(xCoordinate,
 					yCoordinate, imageGraph, cluster);
 			// TODO(cgavidia): This will get real soon
-			double heuristicValue = getHeuristicValue(currentPixel, imageGraph);
+			double heuristicValue = getHeuristicValue(currentPixel, imageGraph)
+					+ ProblemConfiguration.DELTA;
 			double pheromoneTrailValue = pheromoneTrails[xCoordinate
 					* imageGraph[0].length + yCoordinate][cluster]
 					+ ProblemConfiguration.DELTA;
@@ -142,7 +149,7 @@ public class Ant {
 	}
 
 	// TODO(cgavidia): Maybe a Cluster Class would be more appropiate
-	private double getHeuristicValue(ClusteredPixel currentPixel,
+	public double getHeuristicValue(ClusteredPixel currentPixel,
 			int[][] imageGraph) {
 		double euclideanDistance = Math.abs(currentPixel.getGreyScaleValue()
 				- getClusterMeanValue(currentPixel.getCluster()));
@@ -159,7 +166,7 @@ public class Ant {
 		// be a great help
 		for (int cluster = 0; cluster < numberOfClusters; cluster++) {
 			int clusterCounter = 0;
-			int clusterQuality = 0;
+			double clusterQuality = 0;
 			for (int pixel = 0; pixel < currentIndex; pixel++) {
 				if (partition[pixel].getCluster() == cluster) {
 					clusterCounter++;
@@ -167,12 +174,13 @@ public class Ant {
 							imageGraph);
 				}
 			}
-			partitionQuality += clusterQuality / clusterCounter;
+			partitionQuality += clusterCounter != 0 ? clusterQuality
+					/ clusterCounter : 0;
 		}
 		return partitionQuality;
 	}
 
-	private double getContiguityMeasure(ClusteredPixel currentPixel,
+	public double getContiguityMeasure(ClusteredPixel currentPixel,
 			int[][] imageGraph) {
 		// TODO(cgavidia): Contiguity measure taken from: A contiguity-enhanced
 		// k-means clustering algorithm forunsupervised multispectral image
@@ -188,7 +196,7 @@ public class Ant {
 		return currentIndex != 0 ? neighboursWithSameClass / currentIndex : 0;
 	}
 
-	private double getClusterMeanValue(int cluster) {
+	public double getClusterMeanValue(int cluster) {
 		// TODO(cgavidia): This should me stored to save some CPU time
 		double greyScaleSum = 0.0;
 		double clusterCounter = 0;

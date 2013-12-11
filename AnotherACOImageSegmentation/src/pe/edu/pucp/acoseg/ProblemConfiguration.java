@@ -25,17 +25,18 @@ public class ProblemConfiguration {
 	public static final boolean RANDOMIZE_BEFORE_BUILD = false;
 
 	// Max-Min Ant System Pheromone parameters
-	public static final double MINIMUM_PHEROMONE_VALUE = 0.001;
-
 	// TODO(cgavidia): This will be calibrated later
 	public static final double MAXIMUM_PHEROMONE_VALUE = 1.0 / 83;
+	public static final double MINIMUM_PHEROMONE_VALUE = MAXIMUM_PHEROMONE_VALUE / 5;
 
 	// This are values from the original paper
 	// TODO(cgavidia): Calibrate later
-	public static final int MAX_ITERATIONS = 5;
+	public static final int MAX_ITERATIONS = 3;
 	public static final int NUMBER_OF_STEPS = 15;
-	public static final int PHEROMONE_IMPORTANCE = -1;
-	public static final double HEURISTIC_IMPORTANCE = 1;
+	public static final int PHEROMONE_IMPORTANCE = 1;
+
+	// This HAVE TO BE NEGATIVEA, because of the nature of the expression.
+	public static final double HEURISTIC_IMPORTANCE = -1;
 	public static final double EXTRA_WEIGHT = 0.6;
 
 	public static final int COST_FUNCTION_PARAMETER_A = 5000;
@@ -52,7 +53,7 @@ public class ProblemConfiguration {
 	public static final int GRAYSCALE_MAX_RANGE = 255;
 	public static final int GRAYSCALE_POSITIVE_THRESHOLD = 120;
 
-	public static final int NUMBER_OF_ANTS = 10;
+	public static final int NUMBER_OF_ANTS = 5;
 	public static final double CONTIGUITY_MEASURE_PARAM = 0.9;
 
 	public static final String currentConfigurationAsString() {
