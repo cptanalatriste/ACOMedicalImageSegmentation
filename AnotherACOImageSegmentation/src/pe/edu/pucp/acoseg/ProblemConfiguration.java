@@ -8,7 +8,7 @@ public class ProblemConfiguration {
 	public static final String INPUT_DIRECTORY = "C:/Users/CarlosG/Documents/GitHub/AnotherACOImageSegmentation/AnotherACOImageSegmentation/inputImg/";
 	public static final String OUTPUT_DIRECTORY = "C:/Users/CarlosG/Documents/GitHub/AnotherACOImageSegmentation/AnotherACOImageSegmentation/outputImg/";
 
-	public static final String IMAGE_FILE = "300091.jpg";
+	public static final String IMAGE_FILE = "19952transverse2_64.gif";
 	public static final String OUTPUT_IMAGE_FILE = "output.bmp";
 	public static final String PHEROMONE_IMAGE_FILE = "pheromone.bmp";
 	public static final String ORIGINAL_IMAGE_FILE = "original.bmp";
@@ -31,7 +31,7 @@ public class ProblemConfiguration {
 
 	// This are values from the original paper
 	// TODO(cgavidia): Calibrate later
-	public static final int MAX_ITERATIONS = 3;
+	public static final int MAX_ITERATIONS = 5;
 	public static final int NUMBER_OF_STEPS = 15;
 	public static final int PHEROMONE_IMPORTANCE = 1;
 
@@ -43,7 +43,7 @@ public class ProblemConfiguration {
 	public static final int COST_FUNCTION_PARAMETER_B = 10;
 
 	public static final double INITIAL_PHEROMONE_VALUE = Float.MIN_VALUE;
-	public static final int NUMBER_OF_CLUSTERS = 3;
+	public static final int NUMBER_OF_CLUSTERS = 4;
 	public static final boolean USE_PHEROMONE_FOR_CLUSTERING = true;
 	public static final boolean USE_GREYSCALE_FOR_CLUSTERING = true;
 
@@ -53,7 +53,7 @@ public class ProblemConfiguration {
 	public static final int GRAYSCALE_MAX_RANGE = 255;
 	public static final int GRAYSCALE_POSITIVE_THRESHOLD = 120;
 
-	public static final int NUMBER_OF_ANTS = 5;
+	public static final int NUMBER_OF_ANTS = 10;
 	public static final double CONTIGUITY_MEASURE_PARAM = 0.9;
 
 	public static final String currentConfigurationAsString() {

@@ -8,6 +8,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import pe.edu.pucp.acoseg.ACOImageSegmentation;
+
 public class ImageFileHelper {
 
 	public static int[][] getImageArrayFromFile(String imageFile)
@@ -33,7 +35,9 @@ public class ImageFileHelper {
 	public static void generateImageFromArray(
 			int[][] normalizedPheromoneMatrix, String outputImageFile)
 			throws IOException {
-		System.out.println("Generating output image");
+		System.out
+				.println(ACOImageSegmentation.getComputingTimeAsString()
+						+ "Generating output image");
 		BufferedImage outputImage = new BufferedImage(
 				normalizedPheromoneMatrix.length,
 				normalizedPheromoneMatrix[0].length,
@@ -46,6 +50,8 @@ public class ImageFileHelper {
 		}
 		File imageFile = new File(outputImageFile);
 		ImageIO.write(outputImage, "bmp", imageFile);
-		System.out.println("Resulting image stored in: " + outputImageFile);
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				
+				+ "Resulting image stored in: " + outputImageFile);
 	}
 }

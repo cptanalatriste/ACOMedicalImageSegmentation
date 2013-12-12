@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import pe.edu.pucp.acoseg.ACOImageSegmentation;
 import pe.edu.pucp.acoseg.ProblemConfiguration;
 import pe.edu.pucp.acoseg.image.ClusteredPixel;
 import pe.edu.pucp.acoseg.image.PosibleAssignment;
@@ -161,8 +162,9 @@ public class Ant {
 	}
 
 	public double getPartitionQuality(int[][] imageGraph) {
+
 		double partitionQuality = 0.0;
-		// TODO(cgavidia): This again can be optimized. The Cluster clas would
+		// TODO(cgavidia): This MUST be optimized. The Cluster clas would
 		// be a great help
 		for (int cluster = 0; cluster < numberOfClusters; cluster++) {
 			int clusterCounter = 0;

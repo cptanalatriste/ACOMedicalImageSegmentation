@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import pe.edu.pucp.acoseg.ACOImageSegmentation;
 import pe.edu.pucp.acoseg.ProblemConfiguration;
 import pe.edu.pucp.acoseg.image.ClusteredPixel;
 
@@ -20,7 +21,8 @@ public class AntColony {
 		this.environment = environment;
 		// Ant Ant per every pixel
 		this.numberOfAnts = ProblemConfiguration.NUMBER_OF_ANTS;
-		System.out.println("Number of Ants in Colony: " + numberOfAnts);
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Number of Ants in Colony: " + numberOfAnts);
 		this.antColony = new ArrayList<Ant>(numberOfAnts);
 		for (int j = 0; j < numberOfAnts; j++) {
 			antColony.add(new Ant(environment.getNumberOfPixels(), environment
@@ -29,7 +31,8 @@ public class AntColony {
 	}
 
 	public void buildSolutions(boolean depositPheromone) throws Exception {
-		System.out.println("BUILDING ANT SOLUTIONS");
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "BUILDING ANT SOLUTIONS");
 
 		// TODO(cgavidia): We need to pick ants randomly
 		if (ProblemConfiguration.RANDOMIZE_BEFORE_BUILD) {
@@ -38,8 +41,8 @@ public class AntColony {
 
 		int antCounter = 0;
 		for (Ant ant : antColony) {
-			System.out.println("Ant " + antCounter
-					+ " is building a partition ...");
+			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+					+ "Ant " + antCounter + " is building a partition ...");
 			for (int i = 0; i < environment.getImageGraph().length; i++) {
 				for (int j = 0; j < environment.getImageGraph()[0].length; j++) {
 					ClusteredPixel nextPixel = ant.selectedPixelAssignment(i,
@@ -63,7 +66,8 @@ public class AntColony {
 	}
 
 	public void clearAntSolutions() {
-		System.out.println("CLEARING ANT SOLUTIONS");
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "CLEARING ANT SOLUTIONS");
 		for (Ant ant : antColony) {
 			ant.clear();
 			ant.setCurrentIndex(0);
@@ -71,10 +75,12 @@ public class AntColony {
 	}
 
 	public void depositPheromone() throws Exception {
-		System.out.println("Depositing pheromone");
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Depositing pheromone");
 
 		if (ProblemConfiguration.ONLY_BEST_CAN_UPDATE) {
-			System.out.println("Depositing pheromone on Best Ant trail.");
+			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+					+ "Depositing pheromone on Best Ant trail.");
 			Ant bestAnt = getBestAnt();
 			depositPheromoneInAntPath(bestAnt);
 		} else {
@@ -85,6 +91,8 @@ public class AntColony {
 	}
 
 	public void depositPheromoneInAntPath(Ant ant) throws Exception {
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Starting  depositPheromoneInAntPath.");
 
 		double contribution = 1 / ant.getPartitionQuality(environment
 				.getImageGraph());
@@ -116,9 +124,13 @@ public class AntColony {
 					* environment.getImageGraph()[0].length
 					+ imagePixel.getyCoordinate()][imagePixel.getCluster()] = newValue;
 		}
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Ending  depositPheromoneInAntPath.");
 	}
 
 	public Ant getBestAnt() {
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Starting  getBestAnt.");
 		Ant bestAnt = antColony.get(0);
 		for (Ant ant : antColony) {
 			if (ant.getPartitionQuality(environment.getImageGraph()) < bestAnt
@@ -126,12 +138,15 @@ public class AntColony {
 				bestAnt = ant;
 			}
 		}
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Ending  getBestAnt.");
 		return bestAnt;
 
 	}
 
 	public void recordBestSolution() {
-		System.out.println("GETTING BEST SOLUTION FOUND");
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "GETTING BEST SOLUTION FOUND");
 		Ant bestAnt = getBestAnt();
 
 		// TODO(cgavidia): Again, some CPU cicles can be saved here.
@@ -142,8 +157,8 @@ public class AntColony {
 			bestPartitionQuality = bestAnt.getPartitionQuality(environment
 					.getImageGraph());
 		}
-		System.out.println("Best solution so far > Quality: "
-				+ bestPartitionQuality);
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Best solution so far > Quality: " + bestPartitionQuality);
 	}
 
 	public double getBestPartitionQuality() {
