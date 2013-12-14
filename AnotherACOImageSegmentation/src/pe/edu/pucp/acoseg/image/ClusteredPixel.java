@@ -57,61 +57,82 @@ public class ClusteredPixel {
 	}
 
 	// TODO(cgavidia): There must be a more elegant way to do this
-	public List<ClusteredPixel> getNeighbourhood(int[][] imageGraph) {
+	public List<ClusteredPixel> getNeighbourhood(ClusteredPixel[] partition,
+			int[][] imageGraph) {
+
 		ArrayList<ClusteredPixel> neighbours = new ArrayList<ClusteredPixel>();
 		if (yCoordinate - 1 >= 0) {
-			neighbours.add(new ClusteredPixel(xCoordinate, yCoordinate - 1,
-					imageGraph, -1));
+			// TODO(cgavidia): We can have a Plain Pixel class here
+			ClusteredPixel posiblePixel = new ClusteredPixel(xCoordinate,
+					yCoordinate - 1, imageGraph, -1);
+			verifyPartitionAndAdd(partition, neighbours, posiblePixel,
+					imageGraph);
 		}
 
 		if (yCoordinate + 1 < imageGraph[0].length) {
-			neighbours.add(new ClusteredPixel(xCoordinate, yCoordinate + 1,
-					imageGraph, -1));
+			ClusteredPixel posiblePixel = new ClusteredPixel(xCoordinate,
+					yCoordinate + 1, imageGraph, -1);
+			verifyPartitionAndAdd(partition, neighbours, posiblePixel,
+					imageGraph);
+
 		}
 
 		if (xCoordinate - 1 >= 0) {
-			neighbours.add(new ClusteredPixel(xCoordinate - 1, yCoordinate,
-					imageGraph, -1));
+			ClusteredPixel posiblePixel = new ClusteredPixel(xCoordinate - 1,
+					yCoordinate, imageGraph, -1);
+			verifyPartitionAndAdd(partition, neighbours, posiblePixel,
+					imageGraph);
 		}
 
 		if (xCoordinate + 1 < imageGraph.length) {
-			neighbours.add(new ClusteredPixel(xCoordinate + 1, yCoordinate,
-					imageGraph, -1));
+			ClusteredPixel posiblePixel = new ClusteredPixel(xCoordinate + 1,
+					yCoordinate, imageGraph, -1);
+			verifyPartitionAndAdd(partition, neighbours, posiblePixel,
+					imageGraph);
 		}
 
 		if (xCoordinate - 1 >= 0 && yCoordinate - 1 >= 0) {
-			neighbours.add(new ClusteredPixel(xCoordinate - 1, yCoordinate - 1,
-					imageGraph, -1));
+			ClusteredPixel posiblePixel = new ClusteredPixel(xCoordinate - 1,
+					yCoordinate - 1, imageGraph, -1);
+			verifyPartitionAndAdd(partition, neighbours, posiblePixel,
+					imageGraph);
 		}
 
 		if (xCoordinate + 1 < imageGraph.length && yCoordinate - 1 >= 0) {
-			neighbours.add(new ClusteredPixel(xCoordinate + 1, yCoordinate - 1,
-					imageGraph, -1));
+			ClusteredPixel posiblePixel = new ClusteredPixel(xCoordinate + 1,
+					yCoordinate - 1, imageGraph, -1);
+			verifyPartitionAndAdd(partition, neighbours, posiblePixel,
+					imageGraph);
 		}
 
 		if (xCoordinate - 1 >= 0 && yCoordinate + 1 < imageGraph[0].length) {
-			neighbours.add(new ClusteredPixel(xCoordinate - 1, yCoordinate + 1,
-					imageGraph, -1));
+			ClusteredPixel posiblePixel = new ClusteredPixel(xCoordinate - 1,
+					yCoordinate + 1, imageGraph, -1);
+			verifyPartitionAndAdd(partition, neighbours, posiblePixel,
+					imageGraph);
 		}
 
 		if (xCoordinate + 1 < imageGraph.length
 				&& yCoordinate + 1 < imageGraph[0].length) {
-			neighbours.add(new ClusteredPixel(xCoordinate + 1, yCoordinate + 1,
-					imageGraph, -1));
+			ClusteredPixel posiblePixel = new ClusteredPixel(xCoordinate + 1,
+					yCoordinate + 1, imageGraph, -1);
+			verifyPartitionAndAdd(partition, neighbours, posiblePixel,
+					imageGraph);
 		}
 
 		return neighbours;
 	}
 
-	// TODO(cgavidia): Again, this surely can be improved.
-	public boolean isNeighbour(ClusteredPixel currentPixel, int[][] imageGraph) {
-		for (ClusteredPixel neighbour : getNeighbourhood(imageGraph)) {
-			if (neighbour.getxCoordinate() == currentPixel.getxCoordinate()
-					&& neighbour.getyCoordinate() == currentPixel
-							.getyCoordinate()) {
-				return true;
-			}
+	private void verifyPartitionAndAdd(ClusteredPixel[] partition,
+			ArrayList<ClusteredPixel> neighbours, ClusteredPixel posiblePixel,
+			int[][] imageGraph) {
+		ClusteredPixel pixelInPartition = partition[posiblePixel
+				.getxCoordinate()
+				* imageGraph[0].length
+				+ posiblePixel.getyCoordinate()];
+		if (pixelInPartition != null) {
+			posiblePixel.setCluster(pixelInPartition.getCluster());
+			neighbours.add(posiblePixel);
 		}
-		return false;
 	}
 }
