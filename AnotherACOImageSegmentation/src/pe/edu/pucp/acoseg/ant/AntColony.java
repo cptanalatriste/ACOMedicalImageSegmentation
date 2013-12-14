@@ -150,12 +150,12 @@ public class AntColony {
 		Ant bestAnt = getBestAnt();
 
 		// TODO(cgavidia): Again, some CPU cicles can be saved here.
+		double partitionQuality = bestAnt
+				.getPartitionQuality(environment.getImageGraph());
 		if (bestPartition == null
-				|| bestPartitionQuality > bestAnt
-						.getPartitionQuality(environment.getImageGraph())) {
+				|| bestPartitionQuality > partitionQuality) {
 			bestPartition = bestAnt.getPartition().clone();
-			bestPartitionQuality = bestAnt.getPartitionQuality(environment
-					.getImageGraph());
+			bestPartitionQuality = partitionQuality;
 		}
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 				+ "Best solution so far > Quality: " + bestPartitionQuality);
