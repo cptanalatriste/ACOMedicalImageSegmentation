@@ -95,7 +95,7 @@ public class TestDataGenerator {
 				TestDataGenerator.getDummyImageMatrix(),
 				TestDataGenerator.CLUSTERS_FOR_TEST);
 		AntColony antColony = new AntColony(environment);
-		List<Ant> antColonyForTest = new ArrayList<>();
+		List<Ant> antColonyForTest = new ArrayList();
 		Ant antWithTwistedPartition = TestDataGenerator
 				.getAntWithTwistedPartition();
 		antColonyForTest.add(antWithTwistedPartition);

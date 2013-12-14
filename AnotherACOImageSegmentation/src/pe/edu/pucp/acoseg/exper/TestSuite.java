@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pe.edu.pucp.acoseg.ProblemConfiguration;
-import pe.edu.pucp.acoseg.image.ImageSegment;
 
 public class TestSuite {
 
