@@ -9,10 +9,13 @@ public class ProblemConfiguration {
 	public static final String OUTPUT_DIRECTORY = "C:/Users/CarlosG/Documents/GitHub/AnotherACOImageSegmentation/AnotherACOImageSegmentation/outputImg/";
 
 	public static final String IMAGE_FILE = "19952transverse2_64.gif";
-	public static final String OUTPUT_IMAGE_FILE = "output.bmp";
+	public static final String OUTPUT_IMAGE_FILE = IMAGE_FILE.substring(0,
+			IMAGE_FILE.lastIndexOf('.')) + "_output.bmp";
 	public static final String PHEROMONE_IMAGE_FILE = "pheromone.bmp";
-	public static final String ORIGINAL_IMAGE_FILE = "original.bmp";
-	public static final String CLUSTER_IMAGE_FILE = "cluster.bmp";
+	public static final String ORIGINAL_IMAGE_FILE = IMAGE_FILE.substring(0,
+			IMAGE_FILE.lastIndexOf('.')) + "_original.bmp";
+	public static final String CLUSTER_IMAGE_FILE = IMAGE_FILE.substring(0,
+			IMAGE_FILE.lastIndexOf('.')) + "_cluster.bmp";
 
 	public static final double EVAPORATION = 0.9;
 
@@ -26,7 +29,7 @@ public class ProblemConfiguration {
 
 	// Max-Min Ant System Pheromone parameters
 	// TODO(cgavidia): This will be calibrated later
-	public static final double MAXIMUM_PHEROMONE_VALUE = 1.0 / 83;
+	public static final double MAXIMUM_PHEROMONE_VALUE = 1.0 / 30;
 	public static final double MINIMUM_PHEROMONE_VALUE = MAXIMUM_PHEROMONE_VALUE / 5;
 
 	// This are values from the original paper
@@ -43,7 +46,7 @@ public class ProblemConfiguration {
 	public static final int COST_FUNCTION_PARAMETER_B = 10;
 
 	public static final double INITIAL_PHEROMONE_VALUE = Float.MIN_VALUE;
-	public static final int NUMBER_OF_CLUSTERS = 4;
+	public static final int NUMBER_OF_CLUSTERS = 12;
 	public static final boolean USE_PHEROMONE_FOR_CLUSTERING = true;
 	public static final boolean USE_GREYSCALE_FOR_CLUSTERING = true;
 
