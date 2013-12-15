@@ -1,14 +1,11 @@
 package pe.edu.pucp.acoseg;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.Date;
 
 import pe.edu.pucp.acoseg.ant.AntColony;
 import pe.edu.pucp.acoseg.ant.Environment;
-import pe.edu.pucp.acoseg.exper.TestSuite;
 import pe.edu.pucp.acoseg.image.ClusteredPixel;
 import pe.edu.pucp.acoseg.image.ImageFileHelper;
 import pe.edu.pucp.acothres.ACOImageThresholding;
@@ -69,56 +66,10 @@ public class ACOImageSegmentation {
 			/*
 			 * performSegmentation(); new TestSuite().executeReport();
 			 */
-			testHeuristicImportance();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static void testHeuristicImportance() throws IOException, Exception {
-		ProblemConfiguration configuration = ProblemConfiguration.getInstance();
-		PrintWriter printWriter = new PrintWriter(
-				"heuristicImportanceExperiments.txt");
-		String currentOutputDirectory = configuration.getOutputDirectory();
-		printWriter.println("INITIAL SETTINGS");
-		printWriter.println(configuration.currentConfigurationAsString());
-
-		configuration.setHeuristicImportance(0);
-		for (int i = 0; i < 5; i++) {
-			double currentHeuristicImportance = configuration
-					.getHeuristicImportance();
-			configuration
-					.setHeuristicImportance(currentHeuristicImportance - 0.5);
-			String outputDirectoryForExperiment = currentOutputDirectory
-					+ "heuristicImportance_"
-					+ configuration.getHeuristicImportance() + "/";
-			configuration.setOutputDirectory(outputDirectoryForExperiment);
-			File newDirectory = new File(outputDirectoryForExperiment);
-			if (!newDirectory.exists()) {
-				newDirectory.mkdir();
-			}
-
-			ACOImageSegmentation acoImageSegmentation = performSegmentation();
-			TestSuite testSuite = new TestSuite();
-			testSuite.executeReport();
-			String reportLine = " **** Heuristic importance: "
-					+ configuration.getHeuristicImportance()
-					+ ", Execution time:"
-					+ acoImageSegmentation.getComputationTime()
-					+ ", White JCI: "
-					+ testSuite.getJCIForWhiteMatter()
-					+ ", Grey JCI: "
-					+ testSuite.getJCIForGreyMatter()
-					+ ", CLF JCI: "
-					+ testSuite.getJCIForCSF()
-					+ ", Partition Quality: "
-					+ acoImageSegmentation.getAntColony()
-							.getBestPartitionQuality() + "****";
-			System.out.print(reportLine);
-			printWriter.println(reportLine);
-		}
-		printWriter.close();
 	}
 
 	public static ACOImageSegmentation performSegmentation()

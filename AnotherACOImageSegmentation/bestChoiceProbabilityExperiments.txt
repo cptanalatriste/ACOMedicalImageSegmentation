@@ -1,0 +1,18 @@
+INITIAL SETTINGS
+Input file: 19952transverse2_64.gif
+Evaporation parameter: 0.9
+Number of steps: 15
+Number of iterations: 5
+Pheromone importance: 1
+Heuristic importance: -1.0
+Extra weight: 0.6
+Parameter A for Cost Function: 5000
+Parameter B for Cost Function: 10
+Initial Pheromone Value: 1.401298464324817E-45
+Number of Clústers: 4
+ 
+****bestChoiceProbability: 0.9, 		Execution time:695.882790337, White JCI: 0.8843513670738802, Grey JCI: 0.6941204665281994, CLF JCI: 0.24186568360314153, Partition Quality: 54.93272957824337****
+ ****bestChoiceProbability: 0.8, 		Execution time:655.95949139, White JCI: 0.7940411700975081, Grey JCI: 0.6869371164421774, CLF JCI: 0.23353819139596138, Partition Quality: 60.37442739360549****
+ ****bestChoiceProbability: 0.7000000000000001, Execution time:587.532272579, White JCI: 0.7248123480283328, Grey JCI: 0.6642392921462689, CLF JCI: 0.2098544407254612, Partition Quality: 69.93904039333628****
+ ****bestChoiceProbability: 0.6000000000000001, Execution time:530.22655114, White JCI: 0.6482512341140636, Grey JCI: 0.6270433145009416, CLF JCI: 0.19207683073229292, Partition Quality: 82.04767681735613****
+ ****bestChoiceProbability: 0.5000000000000001, Execution time:485.721993554, White JCI: 0.6138513169937964, Grey JCI: 0.572068707991038, CLF JCI: 0.1851193695433825, Partition Quality: 96.47468978047732****

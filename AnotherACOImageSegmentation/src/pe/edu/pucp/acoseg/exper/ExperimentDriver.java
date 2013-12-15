@@ -15,11 +15,17 @@ public class ExperimentDriver {
 		System.out.println("=============================");
 
 		try {
-			// executeExperiment(ACOParameter.HEURISTIC_IMPORTANCE, 0, -0.5, 5);
 			// executeExperiment(ACOParameter.BEST_CHOICE_PROBABILITY, 1, -0.1,
 			// 5);
-			executeExperiment(ACOParameter.EVAPORATION, 1, -0.1, 5);
+			// executeExperiment(ACOParameter.EVAPORATION, 1, -0.1, 5);
+			// executeExperiment(ACOParameter.CONTIGUITY_MEASSURE_PARAM, 1,
+			// -0.1,
+			// 5);
+			// executeExperiment(ACOParameter.MAXIMUM_PHEROMONE_VALUE,
+			// 1.0 / 30 + 0.005, -0.005, 5);
+			// executeExperiment(ACOParameter.HEURISTIC_IMPORTANCE, 0, -0.5, 5);
 
+			executeExperiment(ACOParameter.NUMBER_OF_CLUSTERS, 14, -2, 5);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -34,8 +40,8 @@ public class ExperimentDriver {
 				+ "Experiments.txt");
 		String currentOutputDirectory = configuration.getOutputDirectory();
 		printWriter.println("INITIAL SETTINGS");
-		printWriter.print(configuration.currentConfigurationAsString());
-		printWriter.println("***Experimental Data****");
+		printWriter.println(configuration.currentConfigurationAsString());
+		printWriter.println("\n***Experimental Data****\n");
 		configuration.setParameter(acoParameter, seedValue);
 		for (int i = 0; i < runs; i++) {
 			double currentParameterValue = configuration

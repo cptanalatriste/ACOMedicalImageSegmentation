@@ -54,21 +54,22 @@ public class ProblemConfiguration {
 	public static final int ABSENT_PIXEL_CLUSTER = -1;
 
 	public String currentConfigurationAsString() {
-		String result = "Input file: " + IMAGE_FILE + "\n";
-		result = result + "Evaporation parameter: " + evaporation + "\n";
-		result = result + "Number of steps: " + NUMBER_OF_STEPS + "\n";
-		result = result + "Number of iterations: " + maxIterations + "\n";
-		result = result + "Pheromone importance: " + PHEROMONE_IMPORTANCE
+		String result = " Input file: " + IMAGE_FILE + "\n";
+		result = result + " Evaporation parameter: " + evaporation + "\n";
+		result = result + " Number of steps: " + NUMBER_OF_STEPS + "\n";
+		result = result + " Number of iterations: " + maxIterations + "\n";
+		result = result + " Pheromone importance: " + PHEROMONE_IMPORTANCE
 				+ "\n";
-		result = result + "Heuristic importance: " + heuristicImportance + "\n";
+		result = result + " Heuristic importance: " + heuristicImportance
+				+ "\n";
 
-		result = result + "Extra weight: " + EXTRA_WEIGHT + "\n";
-		result = result + "Parameter A for Cost Function: "
+		result = result + " Extra weight: " + EXTRA_WEIGHT + "\n";
+		result = result + " Parameter A for Cost Function: "
 				+ COST_FUNCTION_PARAMETER_A + "\n";
-		result = result + "Parameter B for Cost Function: "
+		result = result + " Parameter B for Cost Function: "
 				+ COST_FUNCTION_PARAMETER_B + "\n";
-		result = result + "Initial Pheromone Value: " + INITIAL_PHEROMONE_VALUE
-				+ "\n";
+		result = result + " Initial Pheromone Value: "
+				+ INITIAL_PHEROMONE_VALUE + "\n";
 		result = result + " Number of Clústers: " + numberOfClusters + "\n";
 
 		return result;
@@ -83,6 +84,7 @@ public class ProblemConfiguration {
 	private double minimumPheromoneValue = maximumPheromoneValue / 5;
 
 	private int numberOfClusters = 4;
+
 	private int numberOfAnts = 10;
 	private int maxIterations = 5;
 
@@ -142,6 +144,8 @@ public class ProblemConfiguration {
 			break;
 		case MAXIMUM_PHEROMONE_VALUE:
 			this.setMaximumPheromoneValue(parameterValue);
+			// ONLY FOR EXPERIMENT PURPOSES
+			this.setMinimumPheromoneValue(parameterValue / 5);
 			break;
 		case NUMBER_OF_CLUSTERS:
 			this.setNumberOfClusters((int) parameterValue);
@@ -151,6 +155,7 @@ public class ProblemConfiguration {
 			break;
 		case MAX_ITERATIONS:
 			this.setMaxIterations((int) parameterValue);
+
 			break;
 		default:
 			throw new Exception("Parameter is not supported");
