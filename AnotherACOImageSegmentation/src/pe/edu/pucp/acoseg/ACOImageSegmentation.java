@@ -121,7 +121,7 @@ public class ACOImageSegmentation {
 		printWriter.close();
 	}
 
-	private static ACOImageSegmentation performSegmentation()
+	public static ACOImageSegmentation performSegmentation()
 			throws IOException, Exception {
 		String imageFile = ProblemConfiguration.INPUT_DIRECTORY
 				+ ProblemConfiguration.IMAGE_FILE;

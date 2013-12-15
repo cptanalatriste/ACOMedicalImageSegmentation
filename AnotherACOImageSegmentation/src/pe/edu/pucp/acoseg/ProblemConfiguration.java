@@ -69,7 +69,7 @@ public class ProblemConfiguration {
 				+ COST_FUNCTION_PARAMETER_B + "\n";
 		result = result + "Initial Pheromone Value: " + INITIAL_PHEROMONE_VALUE
 				+ "\n";
-		result = result + "Number of Clústers: " + numberOfClusters + "\n";
+		result = result + " Number of Clústers: " + numberOfClusters + "\n";
 
 		return result;
 	}
@@ -90,6 +90,71 @@ public class ProblemConfiguration {
 
 	private ProblemConfiguration() {
 
+	}
+
+	public double getParameter(ACOParameter parameter) throws Exception {
+		double result = 0.0;
+		switch (parameter) {
+		case HEURISTIC_IMPORTANCE:
+			result = this.getHeuristicImportance();
+			break;
+		case BEST_CHOICE_PROBABILITY:
+			result = this.getBestChoiceProbability();
+			break;
+		case EVAPORATION:
+			result = this.getEvaporation();
+			break;
+		case CONTIGUITY_MEASSURE_PARAM:
+			result = this.getContiguityMeassureParam();
+			break;
+		case MAXIMUM_PHEROMONE_VALUE:
+			result = this.getMaximumPheromoneValue();
+			break;
+		case NUMBER_OF_CLUSTERS:
+			result = this.getNumberOfClusters();
+			break;
+		case NUMBER_OF_ANTS:
+			result = this.getNumberOfAnts();
+			break;
+		case MAX_ITERATIONS:
+			result = this.getMaxIterations();
+			break;
+		default:
+			throw new Exception("Parameter is not supported");
+		}
+		return result;
+	}
+
+	public void setParameter(ACOParameter parameter, double parameterValue)
+			throws Exception {
+		switch (parameter) {
+		case HEURISTIC_IMPORTANCE:
+			this.setHeuristicImportance(parameterValue);
+			break;
+		case BEST_CHOICE_PROBABILITY:
+			this.setBestChoiceProbability(parameterValue);
+			break;
+		case EVAPORATION:
+			this.setEvaporation(parameterValue);
+			break;
+		case CONTIGUITY_MEASSURE_PARAM:
+			this.setContiguityMeassureParam(parameterValue);
+			break;
+		case MAXIMUM_PHEROMONE_VALUE:
+			this.setMaximumPheromoneValue(parameterValue);
+			break;
+		case NUMBER_OF_CLUSTERS:
+			this.setNumberOfClusters((int) parameterValue);
+			break;
+		case NUMBER_OF_ANTS:
+			this.setNumberOfAnts((int) parameterValue);
+			break;
+		case MAX_ITERATIONS:
+			this.setMaxIterations((int) parameterValue);
+			break;
+		default:
+			throw new Exception("Parameter is not supported");
+		}
 	}
 
 	public double getHeuristicImportance() {
