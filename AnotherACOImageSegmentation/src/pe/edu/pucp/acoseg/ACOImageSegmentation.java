@@ -8,6 +8,7 @@ import pe.edu.pucp.acoseg.ant.Environment;
 import pe.edu.pucp.acoseg.exper.TestSuite;
 import pe.edu.pucp.acoseg.image.ClusteredPixel;
 import pe.edu.pucp.acoseg.image.ImageFileHelper;
+import pe.edu.pucp.acothres.ACOImageThresholding;
 
 public class ACOImageSegmentation {
 
@@ -73,6 +74,15 @@ public class ACOImageSegmentation {
 			ImageFileHelper.generateImageFromArray(imageGraph,
 					ProblemConfiguration.OUTPUT_DIRECTORY
 							+ ProblemConfiguration.ORIGINAL_IMAGE_FILE);
+
+			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+					+ "Starting background filtering process");
+			int[][] backgroundFilterMask = ACOImageThresholding
+					.getSegmentedImageAsArray(imageFile, false);
+			imageGraph = ImageFileHelper.applyFilter(imageGraph,
+					backgroundFilterMask);
+			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+					+ "Filter applied");
 
 			Environment environment = new Environment(imageGraph,
 					ProblemConfiguration.NUMBER_OF_CLUSTERS);
@@ -152,13 +162,21 @@ public class ACOImageSegmentation {
 			ClusteredPixel[] resultingPartition, Environment environment) {
 		int[][] resultMatrix = new int[environment.getImageGraph().length][environment
 				.getImageGraph()[0].length];
+
 		for (ClusteredPixel clusteredPixel : resultingPartition) {
 			int cluster = clusteredPixel.getCluster();
-			int numberOfClusters = environment.getNumberOfClusters();
-			int greyScaleValue = (int) ((cluster + 1.0) / numberOfClusters * ProblemConfiguration.GRAYSCALE_MAX_RANGE);
-			resultMatrix[clusteredPixel.getxCoordinate()][clusteredPixel
-					.getyCoordinate()] = greyScaleValue;
+			if (cluster != ProblemConfiguration.ABSENT_PIXEL_CLUSTER) {
+				int numberOfClusters = environment.getNumberOfClusters();
+				int greyScaleValue = (int) ((cluster + 1.0) / numberOfClusters * ProblemConfiguration.GRAYSCALE_MAX_RANGE);
+				resultMatrix[clusteredPixel.getxCoordinate()][clusteredPixel
+						.getyCoordinate()] = greyScaleValue;
+			} else {
+				resultMatrix[clusteredPixel.getxCoordinate()][clusteredPixel
+						.getyCoordinate()] = ProblemConfiguration.GRAYSCALE_MIN_RANGE;
+			}
+
 		}
+
 		return resultMatrix;
 	}
 

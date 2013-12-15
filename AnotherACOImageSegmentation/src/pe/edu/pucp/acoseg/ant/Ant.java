@@ -25,7 +25,7 @@ public class Ant {
 		this.partition = new ClusteredPixel[numberOfPixels];
 		this.numberOfClusters = numberOfClusters;
 		this.clusterMap = new HashMap<Integer, Cluster>();
-		for (int i = 0; i < numberOfClusters; i++) {
+		for (int i = -1; i < numberOfClusters; i++) {
 			clusterMap.put(i, new Cluster(i));
 		}
 	}

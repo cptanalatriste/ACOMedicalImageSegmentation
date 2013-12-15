@@ -45,15 +45,23 @@ public class AntColony {
 					+ "Ant " + antCounter + " is building a partition ...");
 			for (int i = 0; i < environment.getImageGraph().length; i++) {
 				for (int j = 0; j < environment.getImageGraph()[0].length; j++) {
-					ClusteredPixel nextPixel = ant.selectedPixelAssignment(i,
-							j, environment.getPheromoneTrails(),
-							environment.getImageGraph());
-					if (nextPixel == null) {
-						throw new Exception(
-								"No pixel was selected, for ant with path: "
-										+ ant.pathAsString());
+					ClusteredPixel nextPixel = null;
+					if (environment.getImageGraph()[i][j] != ProblemConfiguration.ABSENT_PIXEL_FLAG) {
+						nextPixel = ant.selectedPixelAssignment(i, j,
+								environment.getPheromoneTrails(),
+								environment.getImageGraph());
+						if (nextPixel == null) {
+							throw new Exception(
+									"No pixel was selected, for ant with path: "
+											+ ant.pathAsString());
+						}
+					} else {
+						nextPixel = new ClusteredPixel(i, j,
+								environment.getImageGraph(),
+								ProblemConfiguration.ABSENT_PIXEL_CLUSTER);
 					}
 					ant.addAsignmentToSolution(nextPixel);
+
 				}
 			}
 			if (depositPheromone) {
@@ -99,30 +107,31 @@ public class AntColony {
 
 		for (int i = 0; i < environment.getNumberOfPixels(); i++) {
 			ClusteredPixel imagePixel = ant.getPartition()[i];
-			double newValue = environment.getPheromoneTrails()[imagePixel
-					.getxCoordinate()
-					* environment.getImageGraph()[0].length
-					+ imagePixel.getyCoordinate()][imagePixel.getCluster()]
-					* ProblemConfiguration.EXTRA_WEIGHT + contribution;
-			if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE
-					&& newValue < ProblemConfiguration.MINIMUM_PHEROMONE_VALUE) {
-				newValue = ProblemConfiguration.MINIMUM_PHEROMONE_VALUE;
-			} else if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE
-					&& newValue > ProblemConfiguration.MAXIMUM_PHEROMONE_VALUE) {
-				newValue = ProblemConfiguration.MAXIMUM_PHEROMONE_VALUE;
+			if (imagePixel.getCluster() != ProblemConfiguration.ABSENT_PIXEL_CLUSTER) {
+				double newValue = environment.getPheromoneTrails()[imagePixel
+						.getxCoordinate()
+						* environment.getImageGraph()[0].length
+						+ imagePixel.getyCoordinate()][imagePixel.getCluster()]
+						* ProblemConfiguration.EXTRA_WEIGHT + contribution;
+				if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE
+						&& newValue < ProblemConfiguration.MINIMUM_PHEROMONE_VALUE) {
+					newValue = ProblemConfiguration.MINIMUM_PHEROMONE_VALUE;
+				} else if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE
+						&& newValue > ProblemConfiguration.MAXIMUM_PHEROMONE_VALUE) {
+					newValue = ProblemConfiguration.MAXIMUM_PHEROMONE_VALUE;
+				}
+				if (Double.isNaN(newValue)) {
+					throw new Exception(
+							"Invalid feromone final value. Original value: "
+									+ environment.getPheromoneTrails()[imagePixel
+											.getxCoordinate()][imagePixel
+											.getyCoordinate()]
+									+ ". Contribution: " + contribution);
+				}
+				environment.getPheromoneTrails()[imagePixel.getxCoordinate()
+						* environment.getImageGraph()[0].length
+						+ imagePixel.getyCoordinate()][imagePixel.getCluster()] = newValue;
 			}
-
-			if (Double.isNaN(newValue)) {
-				throw new Exception(
-						"Invalid feromone final value. Original value: "
-								+ environment.getPheromoneTrails()[imagePixel
-										.getxCoordinate()][imagePixel
-										.getyCoordinate()] + ". Contribution: "
-								+ contribution);
-			}
-			environment.getPheromoneTrails()[imagePixel.getxCoordinate()
-					* environment.getImageGraph()[0].length
-					+ imagePixel.getyCoordinate()][imagePixel.getCluster()] = newValue;
 		}
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 				+ "Ending  depositPheromoneInAntPath.");
@@ -150,10 +159,9 @@ public class AntColony {
 		Ant bestAnt = getBestAnt();
 
 		// TODO(cgavidia): Again, some CPU cicles can be saved here.
-		double partitionQuality = bestAnt
-				.getPartitionQuality(environment.getImageGraph());
-		if (bestPartition == null
-				|| bestPartitionQuality > partitionQuality) {
+		double partitionQuality = bestAnt.getPartitionQuality(environment
+				.getImageGraph());
+		if (bestPartition == null || bestPartitionQuality > partitionQuality) {
 			bestPartition = bestAnt.getPartition().clone();
 			bestPartitionQuality = partitionQuality;
 		}

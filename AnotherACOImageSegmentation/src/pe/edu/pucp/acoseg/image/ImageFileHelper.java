@@ -10,6 +10,7 @@ import java.util.Arrays;
 import javax.imageio.ImageIO;
 
 import pe.edu.pucp.acoseg.ACOImageSegmentation;
+import pe.edu.pucp.acoseg.ProblemConfiguration;
 
 public class ImageFileHelper {
 
@@ -69,7 +70,6 @@ public class ImageFileHelper {
 
 	public static int[][] cropImage(ImageSegment imageSegment,
 			int[][] originalImage) {
-
 		int numberOfRows = imageSegment.getxBottomBoundary()
 				- imageSegment.getxTopBoundary() + 1;
 		int[][] croppedImage = new int[numberOfRows][];
@@ -101,5 +101,25 @@ public class ImageFileHelper {
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 
 		+ "Resulting image stored in: " + outputImageFile);
+	}
+
+	public static int[][] applyFilter(int[][] imageGraph,
+			int[][] backgroundFilterMask) throws Exception {
+
+		if (imageGraph.length != backgroundFilterMask.length
+				|| imageGraph[0].length != backgroundFilterMask[0].length) {
+			throw new Exception("Images are not comparable");
+		}
+		int[][] result = new int[imageGraph.length][imageGraph[0].length];
+		for (int i = 0; i < imageGraph.length; i++) {
+			for (int j = 0; j < imageGraph[0].length; j++) {
+				if (backgroundFilterMask[i][j] == ProblemConfiguration.GRAYSCALE_MAX_RANGE / 2) {
+					result[i][j] = ProblemConfiguration.ABSENT_PIXEL_FLAG;
+				} else {
+					result[i][j] = imageGraph[i][j];
+				}
+			}
+		}
+		return result;
 	}
 }
