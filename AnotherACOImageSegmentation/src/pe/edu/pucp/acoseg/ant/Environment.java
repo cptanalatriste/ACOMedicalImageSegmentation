@@ -10,6 +10,7 @@ public class Environment {
 
 	private int[][] imageGraph;
 	private double pheromoneTrails[][] = null;
+	private ProblemConfiguration problemConfiguration;
 
 	public Environment(int[][] imageGraph, int numberOfClusters) {
 		super();
@@ -21,6 +22,45 @@ public class Environment {
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 				+ "Number of Píxels: " + numberOfPixels);
 		this.pheromoneTrails = new double[numberOfPixels][numberOfClusters];
+	}
+
+	public void initializePheromoneMatrix() {
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "INITIALIZING PHEROMONE MATRIX");
+		double initialPheromoneValue = ProblemConfiguration.INITIAL_PHEROMONE_VALUE;
+		if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE) {
+			initialPheromoneValue = ProblemConfiguration.getInstance()
+					.getMaximumPheromoneValue();
+		}
+
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Initial pheromone value: " + initialPheromoneValue);
+		for (int i = 0; i < numberOfPixels; i++) {
+			for (int j = 0; j < numberOfClusters; j++) {
+				pheromoneTrails[i][j] = initialPheromoneValue;
+			}
+		}
+	}
+
+	public void performEvaporation() {
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Performing evaporation on all edges");
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Evaporation ratio: "
+				+ ProblemConfiguration.getInstance().getEvaporation());
+		for (int i = 0; i < numberOfPixels; i++) {
+			for (int j = 0; j < numberOfClusters; j++) {
+				double newValue = pheromoneTrails[i][j]
+						* ProblemConfiguration.getInstance().getEvaporation();
+				if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE
+						&& newValue < ProblemConfiguration.getInstance()
+								.getMinimumPheromoneValue()) {
+					newValue = ProblemConfiguration.getInstance()
+							.getMinimumPheromoneValue();
+				}
+				pheromoneTrails[i][j] = newValue;
+			}
+		}
 	}
 
 	public int[][] getImageGraph() {
@@ -39,38 +79,8 @@ public class Environment {
 		return numberOfPixels;
 	}
 
-	public void initializePheromoneMatrix() {
-		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-				+ "INITIALIZING PHEROMONE MATRIX");
-		double initialPheromoneValue = ProblemConfiguration.INITIAL_PHEROMONE_VALUE;
-		if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE) {
-			initialPheromoneValue = ProblemConfiguration.MAXIMUM_PHEROMONE_VALUE;
-		}
-
-		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-				+ "Initial pheromone value: " + initialPheromoneValue);
-		for (int i = 0; i < numberOfPixels; i++) {
-			for (int j = 0; j < numberOfClusters; j++) {
-				pheromoneTrails[i][j] = initialPheromoneValue;
-			}
-		}
+	public ProblemConfiguration getProblemConfiguration() {
+		return problemConfiguration;
 	}
 
-	public void performEvaporation() {
-		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-				+ "Performing evaporation on all edges");
-		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-				+ "Evaporation ratio: " + ProblemConfiguration.EVAPORATION);
-		for (int i = 0; i < numberOfPixels; i++) {
-			for (int j = 0; j < numberOfClusters; j++) {
-				double newValue = pheromoneTrails[i][j]
-						* ProblemConfiguration.EVAPORATION;
-				if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE
-						&& newValue < ProblemConfiguration.MINIMUM_PHEROMONE_VALUE) {
-					newValue = ProblemConfiguration.MINIMUM_PHEROMONE_VALUE;
-				}
-				pheromoneTrails[i][j] = newValue;
-			}
-		}
-	}
 }

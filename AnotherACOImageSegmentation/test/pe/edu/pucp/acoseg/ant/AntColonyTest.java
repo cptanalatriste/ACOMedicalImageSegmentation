@@ -52,13 +52,15 @@ public class AntColonyTest {
 		for (int i = 0; i < pheromoneMatrix.length; i++) {
 			for (int j = 0; j < pheromoneMatrix[0].length; j++) {
 				if (j == 0) {
-					if (contribution < ProblemConfiguration.MINIMUM_PHEROMONE_VALUE) {
-						assertEquals(
-								ProblemConfiguration.MINIMUM_PHEROMONE_VALUE,
+					if (contribution < ProblemConfiguration.getInstance()
+							.getMinimumPheromoneValue()) {
+						assertEquals(ProblemConfiguration.getInstance()
+								.getMinimumPheromoneValue(),
 								pheromoneMatrix[i][j], 0.001);
-					} else if (contribution > ProblemConfiguration.MAXIMUM_PHEROMONE_VALUE) {
-						assertEquals(
-								ProblemConfiguration.MAXIMUM_PHEROMONE_VALUE,
+					} else if (contribution > ProblemConfiguration
+							.getInstance().getMaximumPheromoneValue()) {
+						assertEquals(ProblemConfiguration.getInstance()
+								.getMaximumPheromoneValue(),
 								pheromoneMatrix[i][j], 0.001);
 					} else {
 						assertEquals(contribution, pheromoneMatrix[i][j], 0.001);

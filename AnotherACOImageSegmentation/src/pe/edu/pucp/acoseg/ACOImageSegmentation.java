@@ -1,5 +1,8 @@
 package pe.edu.pucp.acoseg;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.Date;
 
@@ -16,6 +19,7 @@ public class ACOImageSegmentation {
 
 	private Environment environment;
 	private AntColony antColony;
+	private double computationTime;
 
 	public ACOImageSegmentation(Environment environment) {
 		this.environment = environment;
@@ -29,8 +33,9 @@ public class ACOImageSegmentation {
 				+ "STARTING ITERATIONS");
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 				+ "Number of iterations: "
-				+ ProblemConfiguration.MAX_ITERATIONS);
-		while (iteration < ProblemConfiguration.MAX_ITERATIONS) {
+				+ ProblemConfiguration.getInstance().getMaxIterations());
+		while (iteration < ProblemConfiguration.getInstance()
+				.getMaxIterations()) {
 			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 					+ "Current iteration: " + iteration);
 			this.antColony.clearAntSolutions();
@@ -61,81 +66,129 @@ public class ACOImageSegmentation {
 		System.out.println("=============================");
 
 		try {
-			String imageFile = ProblemConfiguration.INPUT_DIRECTORY
-					+ ProblemConfiguration.IMAGE_FILE;
-			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-					+ "Data file: " + imageFile);
-
-			int[][] imageGraph = ImageFileHelper
-					.getImageArrayFromFile(imageFile);
-
-			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-					+ "Generating original image from matrix");
-			ImageFileHelper.generateImageFromArray(imageGraph,
-					ProblemConfiguration.OUTPUT_DIRECTORY
-							+ ProblemConfiguration.ORIGINAL_IMAGE_FILE);
-
-			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-					+ "Starting background filtering process");
-			int[][] backgroundFilterMask = ACOImageThresholding
-					.getSegmentedImageAsArray(imageFile, false);
-			imageGraph = ImageFileHelper.applyFilter(imageGraph,
-					backgroundFilterMask);
-			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-					+ "Filter applied");
-
-			Environment environment = new Environment(imageGraph,
-					ProblemConfiguration.NUMBER_OF_CLUSTERS);
-
-			startingComputingTime = System.nanoTime();
-			ClusteredPixel[] resultingPartition = null;
-			if (ProblemConfiguration.USE_PHEROMONE_FOR_CLUSTERING) {
-				ACOImageSegmentation acoImageSegmentation = new ACOImageSegmentation(
-						environment);
-				System.out.println(ACOImageSegmentation
-						.getComputingTimeAsString()
-						+ "Starting computation at: " + new Date());
-				resultingPartition = acoImageSegmentation.solveProblem();
-			}
-
-			// TODO(cgavidia): There should a method to get the number of
-			// clústers automatically. Also, son preprocessing or postprocessing
-			// would improve quality.
-
-			// TODO(cgavidia): For now
-
-			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-					+ "Finishing computation at: " + new Date());
-			System.out
-					.println(ACOImageSegmentation.getComputingTimeAsString()
-							+ "Duration (in seconds): "
-							+ ((double) (System.nanoTime() - startingComputingTime) / 1000000000.0));
-
-			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-					+ "Generating segmented image");
-			int[][] segmentedImageAsMatrix = generateSegmentedImage(
-					resultingPartition, environment);
-			ImageFileHelper.generateImageFromArray(segmentedImageAsMatrix,
-					ProblemConfiguration.OUTPUT_DIRECTORY
-							+ ProblemConfiguration.OUTPUT_IMAGE_FILE);
-
-			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-					+ "Generating images per cluster");
-			for (int i = 0; i < ProblemConfiguration.NUMBER_OF_CLUSTERS; i++) {
-				int[][] clusterImage = generateSegmentedImagePerCluster(i,
-						resultingPartition, environment);
-				ImageFileHelper.generateImageFromArray(clusterImage,
-						ProblemConfiguration.OUTPUT_DIRECTORY + i + "_"
-								+ ProblemConfiguration.CLUSTER_IMAGE_FILE);
-
-			}
-
-			new TestSuite().executeReport();
-
+			/*
+			 * performSegmentation(); new TestSuite().executeReport();
+			 */
+			testHeuristicImportance();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void testHeuristicImportance() throws IOException, Exception {
+		ProblemConfiguration configuration = ProblemConfiguration.getInstance();
+		PrintWriter printWriter = new PrintWriter(
+				"heuristicImportanceExperiments.txt");
+		String currentOutputDirectory = configuration.getOutputDirectory();
+		printWriter.println("INITIAL SETTINGS");
+		printWriter.println(configuration.currentConfigurationAsString());
+
+		configuration.setHeuristicImportance(0);
+		for (int i = 0; i < 5; i++) {
+			double currentHeuristicImportance = configuration
+					.getHeuristicImportance();
+			configuration
+					.setHeuristicImportance(currentHeuristicImportance - 0.5);
+			String outputDirectoryForExperiment = currentOutputDirectory
+					+ "heuristicImportance_"
+					+ configuration.getHeuristicImportance() + "/";
+			configuration.setOutputDirectory(outputDirectoryForExperiment);
+			File newDirectory = new File(outputDirectoryForExperiment);
+			if (!newDirectory.exists()) {
+				newDirectory.mkdir();
+			}
+
+			ACOImageSegmentation acoImageSegmentation = performSegmentation();
+			TestSuite testSuite = new TestSuite();
+			testSuite.executeReport();
+			String reportLine = " **** Heuristic importance: "
+					+ configuration.getHeuristicImportance()
+					+ ", Execution time:"
+					+ acoImageSegmentation.getComputationTime()
+					+ ", White JCI: "
+					+ testSuite.getJCIForWhiteMatter()
+					+ ", Grey JCI: "
+					+ testSuite.getJCIForGreyMatter()
+					+ ", CLF JCI: "
+					+ testSuite.getJCIForCSF()
+					+ ", Partition Quality: "
+					+ acoImageSegmentation.getAntColony()
+							.getBestPartitionQuality() + "****";
+			System.out.print(reportLine);
+			printWriter.println(reportLine);
+		}
+		printWriter.close();
+	}
+
+	private static ACOImageSegmentation performSegmentation()
+			throws IOException, Exception {
+		String imageFile = ProblemConfiguration.INPUT_DIRECTORY
+				+ ProblemConfiguration.IMAGE_FILE;
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Data file: " + imageFile);
+
+		int[][] imageGraph = ImageFileHelper.getImageArrayFromFile(imageFile);
+
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Generating original image from matrix");
+		ImageFileHelper.generateImageFromArray(imageGraph, ProblemConfiguration
+				.getInstance().getOutputDirectory()
+				+ ProblemConfiguration.ORIGINAL_IMAGE_FILE);
+
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Starting background filtering process");
+		int[][] backgroundFilterMask = ACOImageThresholding
+				.getSegmentedImageAsArray(imageFile, false);
+		imageGraph = ImageFileHelper.applyFilter(imageGraph,
+				backgroundFilterMask);
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Filter applied");
+
+		Environment environment = new Environment(imageGraph,
+				ProblemConfiguration.getInstance().getNumberOfClusters());
+
+		startingComputingTime = System.nanoTime();
+		ClusteredPixel[] resultingPartition = null;
+		ACOImageSegmentation acoImageSegmentation = null;
+		if (ProblemConfiguration.USE_PHEROMONE_FOR_CLUSTERING) {
+			acoImageSegmentation = new ACOImageSegmentation(environment);
+			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+					+ "Starting computation at: " + new Date());
+			resultingPartition = acoImageSegmentation.solveProblem();
+		}
+
+		// TODO(cgavidia): There should a method to get the number of
+		// clústers automatically. Also, son preprocessing or postprocessing
+		// would improve quality.
+
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Finishing computation at: " + new Date());
+		double computationTime = (double) (System.nanoTime() - startingComputingTime) / 1000000000.0;
+		acoImageSegmentation.setComputationTime(computationTime);
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Duration (in seconds): " + computationTime);
+
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Generating segmented image");
+		int[][] segmentedImageAsMatrix = generateSegmentedImage(
+				resultingPartition, environment);
+		ImageFileHelper.generateImageFromArray(segmentedImageAsMatrix,
+				ProblemConfiguration.getInstance().getOutputDirectory()
+						+ ProblemConfiguration.OUTPUT_IMAGE_FILE);
+
+		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+				+ "Generating images per cluster");
+		for (int i = 0; i < ProblemConfiguration.getInstance()
+				.getNumberOfClusters(); i++) {
+			int[][] clusterImage = generateSegmentedImagePerCluster(i,
+					resultingPartition, environment);
+			ImageFileHelper.generateImageFromArray(clusterImage,
+					ProblemConfiguration.getInstance().getOutputDirectory() + i
+							+ "_" + ProblemConfiguration.CLUSTER_IMAGE_FILE);
+
+		}
+		return acoImageSegmentation;
 	}
 
 	private static int[][] generateSegmentedImagePerCluster(int clusterNumber,
@@ -183,5 +236,17 @@ public class ACOImageSegmentation {
 	public static String getComputingTimeAsString() {
 		double computingTime = (double) (System.nanoTime() - startingComputingTime) / 1000000000.0;
 		return new DecimalFormat("##.##").format(computingTime) + ":	";
+	}
+
+	private void setComputationTime(double computationTime) {
+		this.computationTime = computationTime;
+	}
+
+	public AntColony getAntColony() {
+		return antColony;
+	}
+
+	public double getComputationTime() {
+		return computationTime;
 	}
 }

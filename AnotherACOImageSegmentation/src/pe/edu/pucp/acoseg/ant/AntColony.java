@@ -20,7 +20,8 @@ public class AntColony {
 	public AntColony(Environment environment) {
 		this.environment = environment;
 		// Ant Ant per every pixel
-		this.numberOfAnts = ProblemConfiguration.NUMBER_OF_ANTS;
+		this.numberOfAnts = ProblemConfiguration.getInstance()
+				.getNumberOfAnts();
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 				+ "Number of Ants in Colony: " + numberOfAnts);
 		this.antColony = new ArrayList<Ant>(numberOfAnts);
@@ -114,11 +115,15 @@ public class AntColony {
 						+ imagePixel.getyCoordinate()][imagePixel.getCluster()]
 						* ProblemConfiguration.EXTRA_WEIGHT + contribution;
 				if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE
-						&& newValue < ProblemConfiguration.MINIMUM_PHEROMONE_VALUE) {
-					newValue = ProblemConfiguration.MINIMUM_PHEROMONE_VALUE;
+						&& newValue < ProblemConfiguration.getInstance()
+								.getMinimumPheromoneValue()) {
+					newValue = ProblemConfiguration.getInstance()
+							.getMinimumPheromoneValue();
 				} else if (ProblemConfiguration.MMAS_PHEROMONE_UPDATE
-						&& newValue > ProblemConfiguration.MAXIMUM_PHEROMONE_VALUE) {
-					newValue = ProblemConfiguration.MAXIMUM_PHEROMONE_VALUE;
+						&& newValue > ProblemConfiguration.getInstance()
+								.getMaximumPheromoneValue()) {
+					newValue = ProblemConfiguration.getInstance()
+							.getMaximumPheromoneValue();
 				}
 				if (Double.isNaN(newValue)) {
 					throw new Exception(

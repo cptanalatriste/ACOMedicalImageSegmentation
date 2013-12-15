@@ -44,7 +44,8 @@ public class AntTest {
 		Ant antForTest = TestDataGenerator.getAntWithPartialPartition();
 		ClusteredPixel pixelToEvaluate = new ClusteredPixel(1, 1,
 				TestDataGenerator.getDummyImageMatrix(), 0);
-		double expectedHeuristicValue = 85.0 + ProblemConfiguration.CONTIGUITY_MEASURE_PARAM * 0.5;
+		double expectedHeuristicValue = 85.0 + ProblemConfiguration
+				.getInstance().getContiguityMeassureParam() * 0.5;
 		assertEquals(
 				expectedHeuristicValue,
 				antForTest.getHeuristicValue(pixelToEvaluate,

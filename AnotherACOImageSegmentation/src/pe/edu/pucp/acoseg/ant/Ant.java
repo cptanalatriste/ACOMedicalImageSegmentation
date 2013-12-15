@@ -86,7 +86,8 @@ public class Ant {
 		List<PosibleAssignment> probabilities = getProbabilities(xCoordinate,
 				yCoordinate, pheromoneTrails, imageGraph);
 
-		if (randomValue < ProblemConfiguration.BEST_CHOICE_PROBABILITY) {
+		if (randomValue < ProblemConfiguration.getInstance()
+				.getBestChoiceProbability()) {
 			return getMaximumValueAssignment(probabilities);
 		} else {
 			double anotherRandomValue = random.nextDouble();
@@ -140,8 +141,9 @@ public class Ant {
 			double pheromoneTrailValue = pheromoneTrails[xCoordinate
 					* imageGraph[0].length + yCoordinate][cluster]
 					+ ProblemConfiguration.DELTA;
-			double heuristicTimesPheromone = Math.pow(heuristicValue,
-					ProblemConfiguration.HEURISTIC_IMPORTANCE)
+			double heuristicTimesPheromone = Math
+					.pow(heuristicValue, ProblemConfiguration.getInstance()
+							.getHeuristicImportance())
 					* Math.pow(pheromoneTrailValue,
 							ProblemConfiguration.PHEROMONE_IMPORTANCE);
 			pixelsWithProbabilities.add(new PosibleAssignment(currentPixel,
@@ -169,8 +171,8 @@ public class Ant {
 		double contiguityMeasure = getContiguityMeasure(currentPixel,
 				imageGraph);
 		return euclideanDistance
-				+ ProblemConfiguration.CONTIGUITY_MEASURE_PARAM
-				* contiguityMeasure;
+				+ ProblemConfiguration.getInstance()
+						.getContiguityMeassureParam() * contiguityMeasure;
 	}
 
 	public double getPartitionQuality(int[][] imageGraph) {

@@ -1,24 +1,27 @@
 package pe.edu.pucp.acoseg.exper;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import pe.edu.pucp.acoseg.ProblemConfiguration;
 
 public class TestSuite {
 
-	private List<ImageComparator> comparisonList = new ArrayList<ImageComparator>();
+	private static final String WHITE_KEY = "WHITE";
+	private static final String GREY_KEY = "GREY";
+	private static final String CSF_KEY = "CSF";
+
+	private HashMap<String, ImageComparator> comparisonMap = new HashMap<String, ImageComparator>();
 
 	public TestSuite() {
-		comparisonList.add(new ImageComparator("CSF",
+		comparisonMap.put(CSF_KEY, new ImageComparator(CSF_KEY,
 				ProblemConfiguration.INPUT_DIRECTORY
 						+ "csf_21130transverse1_64.gif",
 				ProblemConfiguration.GRAYSCALE_POSITIVE_THRESHOLD));
-		comparisonList.add(new ImageComparator("Grey Matter",
+		comparisonMap.put(GREY_KEY, new ImageComparator("Grey Matter",
 				ProblemConfiguration.INPUT_DIRECTORY
 						+ "grey_20342transverse1_64.gif",
 				ProblemConfiguration.GRAYSCALE_POSITIVE_THRESHOLD));
-		comparisonList.add(new ImageComparator("White Matter",
+		comparisonMap.put(WHITE_KEY, new ImageComparator("White Matter",
 				ProblemConfiguration.INPUT_DIRECTORY
 						+ "white_20358transverse1_64.gif",
 				ProblemConfiguration.GRAYSCALE_POSITIVE_THRESHOLD));
@@ -31,17 +34,21 @@ public class TestSuite {
 		System.out.println("\n\nEXPERIMENT EXECUTION REPORT");
 		System.out.println("===============================");
 
-		for (ImageComparator comparator : comparisonList) {
+		for (ImageComparator comparator : comparisonMap.values()) {
 			double maximumJCI = 0;
 			String maximumJCIClusterFile = "";
-			for (int i = 0; i < ProblemConfiguration.NUMBER_OF_CLUSTERS; i++) {
-				String currentFile = ProblemConfiguration.OUTPUT_DIRECTORY + i
-						+ "_" + ProblemConfiguration.CLUSTER_IMAGE_FILE;
-				comparator
-						.setImageToValidateFile(ProblemConfiguration.OUTPUT_DIRECTORY
-								+ i
-								+ "_"
-								+ ProblemConfiguration.CLUSTER_IMAGE_FILE);
+			for (int i = 0; i < ProblemConfiguration.getInstance()
+					.getNumberOfClusters(); i++) {
+				String currentFile = ProblemConfiguration.getInstance()
+						.getOutputDirectory()
+						+ i
+						+ "_"
+						+ ProblemConfiguration.CLUSTER_IMAGE_FILE;
+				comparator.setImageToValidateFile(ProblemConfiguration
+						.getInstance().getOutputDirectory()
+						+ i
+						+ "_"
+						+ ProblemConfiguration.CLUSTER_IMAGE_FILE);
 				comparator.executeComparison();
 				if (comparator.getJaccardSimilarityIndex() > maximumJCI) {
 					maximumJCI = comparator.getJaccardSimilarityIndex();
@@ -52,12 +59,25 @@ public class TestSuite {
 			comparator.setImageToValidateFile(maximumJCIClusterFile);
 		}
 
-		System.out.println(ProblemConfiguration.currentConfigurationAsString());
+		System.out.println(ProblemConfiguration.getInstance()
+				.currentConfigurationAsString());
 
-		for (ImageComparator comparator : comparisonList) {
+		for (ImageComparator comparator : comparisonMap.values()) {
 			comparator.executeComparison();
 			System.out.println(comparator.resultAsString());
 		}
 
+	}
+
+	public double getJCIForCSF() {
+		return comparisonMap.get(CSF_KEY).getJaccardSimilarityIndex();
+	}
+
+	public double getJCIForGreyMatter() {
+		return comparisonMap.get(GREY_KEY).getJaccardSimilarityIndex();
+	}
+
+	public double getJCIForWhiteMatter() {
+		return comparisonMap.get(WHITE_KEY).getJaccardSimilarityIndex();
 	}
 }
