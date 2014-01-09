@@ -1,0 +1,18 @@
+INITIAL SETTINGS
+Input file: 19952transverse2_64.gif
+Evaporation parameter: 0.9
+Number of steps: 15
+Number of iterations: 5
+Pheromone importance: 1
+Heuristic importance: -1.0
+Extra weight: 0.6
+Parameter A for Cost Function: 5000
+Parameter B for Cost Function: 10
+Initial Pheromone Value: 1.401298464324817E-45
+ Number of Clústers: 4
+***Experimental Data****
+ ****contiguityMeassureParam: 0.9, 			Execution time:703.01606573, White JCI: 0.8605174353205849, Grey JCI: 0.6961246504194966, CLF JCI: 0.24297043979812544, Partition Quality: 54.65874777467625****
+ ****contiguityMeassureParam: 0.8, 			Execution time:713.734558579, White JCI: 0.8276691072013987, Grey JCI: 0.7006272113219685, CLF JCI: 0.2425949774629749, Partition Quality: 54.611653204047755****
+ ****contiguityMeassureParam: 0.7000000000000001, 	Execution time:694.847532317, White JCI: 0.8389701069168667, Grey JCI: 0.6935915093575306, CLF JCI: 0.24757759894892428, Partition Quality: 53.88941245581847****
+ ****contiguityMeassureParam: 0.6000000000000001, 	Execution time:693.965379235, White JCI: 0.8281674823273518, Grey JCI: 0.700395065709909, CLF JCI: 0.24617129892229156, Partition Quality: 53.57533181894613****
+ ****contiguityMeassureParam: 0.5000000000000001, 	Execution time:730.988016714, White JCI: 0.8194945848375451, Grey JCI: 0.6972506393861893, CLF JCI: 0.2417019915220347, Partition Quality: 52.89146198975935****
