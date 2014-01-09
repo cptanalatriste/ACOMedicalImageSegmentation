@@ -6,6 +6,7 @@ import java.util.Date;
 
 import pe.edu.pucp.acoseg.ant.AntColony;
 import pe.edu.pucp.acoseg.ant.Environment;
+import pe.edu.pucp.acoseg.exper.TestSuite;
 import pe.edu.pucp.acoseg.image.ClusteredPixel;
 import pe.edu.pucp.acoseg.image.ImageFileHelper;
 import pe.edu.pucp.acothres.ACOImageThresholding;
@@ -44,7 +45,7 @@ public class ACOImageSegmentation {
 				this.antColony.depositPheromone();
 			}
 			this.environment.performEvaporation();
-			this.antColony.recordBestSolution();
+			this.antColony.recordBestSolution(iteration);
 			iteration++;
 		}
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
@@ -63,9 +64,10 @@ public class ACOImageSegmentation {
 		System.out.println("=============================");
 
 		try {
-			/*
-			 * performSegmentation(); new TestSuite().executeReport();
-			 */
+
+			performSegmentation();
+			new TestSuite().executeReport();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -81,20 +83,23 @@ public class ACOImageSegmentation {
 
 		int[][] imageGraph = ImageFileHelper.getImageArrayFromFile(imageFile);
 
-		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-				+ "Generating original image from matrix");
-		ImageFileHelper.generateImageFromArray(imageGraph, ProblemConfiguration
-				.getInstance().getOutputDirectory()
-				+ ProblemConfiguration.ORIGINAL_IMAGE_FILE);
 
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 				+ "Starting background filtering process");
+
+		// TODO(cgavidia): Only for testing
+		// int[][] backgroundFilterMask = ACOImageThresholding
+		// .getSegmentedImageAsArray(imageFile, false);
 		int[][] backgroundFilterMask = ACOImageThresholding
-				.getSegmentedImageAsArray(imageFile, false);
+				.getSegmentedImageAsArray(imageFile, true);
+
 		imageGraph = ImageFileHelper.applyFilter(imageGraph,
 				backgroundFilterMask);
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-				+ "Filter applied");
+				+ "Generating filtered image");
+		ImageFileHelper.generateImageFromArray(imageGraph, ProblemConfiguration
+				.getInstance().getOutputDirectory()
+				+ ProblemConfiguration.FILTERED_IMAGE_FILE);
 
 		Environment environment = new Environment(imageGraph,
 				ProblemConfiguration.getInstance().getNumberOfClusters());

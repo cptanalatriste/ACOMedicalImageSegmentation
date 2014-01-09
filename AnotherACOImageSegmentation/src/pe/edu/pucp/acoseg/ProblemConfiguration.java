@@ -16,6 +16,8 @@ public class ProblemConfiguration {
 	public static final String PHEROMONE_IMAGE_FILE = "pheromone.bmp";
 	public static final String ORIGINAL_IMAGE_FILE = IMAGE_FILE.substring(0,
 			IMAGE_FILE.lastIndexOf('.')) + "_original.bmp";
+	public static final String FILTERED_IMAGE_FILE = IMAGE_FILE.substring(0,
+			IMAGE_FILE.lastIndexOf('.')) + "_filtered.bmp";
 	public static final String CLUSTER_IMAGE_FILE = IMAGE_FILE.substring(0,
 			IMAGE_FILE.lastIndexOf('.')) + "_cluster.bmp";
 
@@ -53,6 +55,8 @@ public class ProblemConfiguration {
 	public static final int ABSENT_PIXEL_FLAG = -1;
 	public static final int ABSENT_PIXEL_CLUSTER = -1;
 
+	public static final int GRAYSCALE_DELTA = 10;
+
 	public String currentConfigurationAsString() {
 		String result = " Input file: " + IMAGE_FILE + "\n";
 		result = result + " Evaporation parameter: " + evaporation + "\n";
@@ -83,7 +87,7 @@ public class ProblemConfiguration {
 	private double maximumPheromoneValue = 1.0 / 30;
 	private double minimumPheromoneValue = maximumPheromoneValue / 5;
 
-	private int numberOfClusters = 4;
+	private int numberOfClusters = 3;
 
 	private int numberOfAnts = 10;
 	private int maxIterations = 5;

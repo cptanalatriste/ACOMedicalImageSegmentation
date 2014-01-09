@@ -29,7 +29,7 @@ public class AntColonyTest {
 		antColony.setBestPartitionQuality(TestDataGenerator
 				.getAntWithTwistedPartition().getPartitionQuality(
 						TestDataGenerator.getDummyImageMatrix()));
-		antColony.recordBestSolution();
+		antColony.recordBestSolution(0);
 		Ant antWithPerfectPartition = TestDataGenerator
 				.getAntWithPerfectPartition();
 		assertEquals(

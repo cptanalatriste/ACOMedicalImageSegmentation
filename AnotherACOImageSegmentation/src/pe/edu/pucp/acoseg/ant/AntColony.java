@@ -16,6 +16,7 @@ public class AntColony {
 
 	private ClusteredPixel bestPartition[];
 	public double bestPartitionQuality = -1.0;
+	public int bestPartitionIteration = -1;
 
 	public AntColony(Environment environment) {
 		this.environment = environment;
@@ -68,7 +69,17 @@ public class AntColony {
 			if (depositPheromone) {
 				depositPheromoneInAntPath(ant);
 			}
+
+			// TODO(cgavidia): Remove comments later. Can impact negatively
+			// on performance.
+			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+					+ "Solution quality before local search : "
+					+ ant.getPartitionQuality(environment.getImageGraph()));
+			ant.improvePartition(environment.getImageGraph());
 			antCounter++;
+			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
+					+ "Solution quality after local search : "
+					+ ant.getPartitionQuality(environment.getImageGraph()));
 			// TODO(cgavidia): Local search is also omitted. No recording of
 			// best solutions either.
 		}
@@ -158,7 +169,7 @@ public class AntColony {
 
 	}
 
-	public void recordBestSolution() {
+	public void recordBestSolution(int iterationCounter) {
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 				+ "GETTING BEST SOLUTION FOUND");
 		Ant bestAnt = getBestAnt();
@@ -169,6 +180,7 @@ public class AntColony {
 		if (bestPartition == null || bestPartitionQuality > partitionQuality) {
 			bestPartition = bestAnt.getPartition().clone();
 			bestPartitionQuality = partitionQuality;
+			bestPartitionIteration = iterationCounter;
 		}
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 				+ "Best solution so far > Quality: " + bestPartitionQuality);
@@ -193,4 +205,13 @@ public class AntColony {
 	public void setAntColony(List<Ant> antColony) {
 		this.antColony = antColony;
 	}
+
+	public int getBestPartitionIteration() {
+		return bestPartitionIteration;
+	}
+
+	public void setBestPartitionIteration(int bestPartitionIteration) {
+		this.bestPartitionIteration = bestPartitionIteration;
+	}
+
 }

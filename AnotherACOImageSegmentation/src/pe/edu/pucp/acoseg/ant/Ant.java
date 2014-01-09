@@ -199,20 +199,19 @@ public class Ant {
 	public double getContiguityMeasure(ClusteredPixel currentPixel,
 			int[][] imageGraph) {
 		// TODO(cgavidia): Contiguity measure taken from: A contiguity-enhanced
-		// k-means clustering algorithm forunsupervised multispectral image
+		// k-means clustering algorithm for unsupervised multispectral image
 		// segmentation
 
-		double neighboursWithSameClass = 0;
+		double neighboursWithDifferentClass = 0;
 
 		List<ClusteredPixel> neighbours = currentPixel.getNeighbourhood(
 				partition, imageGraph);
 		for (ClusteredPixel neighbour : neighbours) {
-			if (neighbour.getCluster() == currentPixel.getCluster()) {
-				neighboursWithSameClass++;
+			if (neighbour.getCluster() != currentPixel.getCluster()) {
+				neighboursWithDifferentClass++;
 			}
 		}
-		return neighbours.size() != 0 ? neighboursWithSameClass
-				/ neighbours.size() : 0;
+		return neighboursWithDifferentClass;
 	}
 
 	public double getClusterMeanValue(int cluster) {
@@ -250,6 +249,19 @@ public class Ant {
 			}
 		}
 		return result;
+	}
+
+	public void improvePartition(int[][] imageGraph) {
+		/*
+		 * double currentQuality = getPartitionQuality(imageGraph); Random
+		 * random = new Random(); for (ClusteredPixel clusteredPixel :
+		 * partition) { int originalClusterValue = clusteredPixel.getCluster();
+		 * int newClusterValue = random.nextInt(numberOfClusters);
+		 * if(newClusterValue != originalClusterValue){
+		 * clusteredPixel.setCluster(newClusterValue); double
+		 * newPartitionQuality = }
+		 * clusteredPixel.setCluster(originalClusterValue); }
+		 */
 	}
 
 }

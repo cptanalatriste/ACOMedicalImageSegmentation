@@ -81,19 +81,18 @@ public class ImageFileHelper {
 		return croppedImage;
 	}
 
-	public static void generateImageFromArray(
-			int[][] normalizedPheromoneMatrix, String outputImageFile)
-			throws IOException {
-		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-				+ "Generating output image");
-		BufferedImage outputImage = new BufferedImage(
-				normalizedPheromoneMatrix.length,
-				normalizedPheromoneMatrix[0].length,
-				BufferedImage.TYPE_BYTE_GRAY);
+	public static void generateImageFromArray(int[][] imageAsArray,
+			String outputImageFile) throws IOException {
+		BufferedImage outputImage = new BufferedImage(imageAsArray.length,
+				imageAsArray[0].length, BufferedImage.TYPE_BYTE_GRAY);
 		WritableRaster raster = outputImage.getRaster();
-		for (int x = 0; x < normalizedPheromoneMatrix.length; x++) {
-			for (int y = 0; y < normalizedPheromoneMatrix[x].length; y++) {
-				raster.setSample(x, y, 0, normalizedPheromoneMatrix[x][y]);
+		for (int x = 0; x < imageAsArray.length; x++) {
+			for (int y = 0; y < imageAsArray[x].length; y++) {
+				int greyscaleValue = imageAsArray[x][y];
+				if (greyscaleValue == ProblemConfiguration.ABSENT_PIXEL_CLUSTER) {
+					greyscaleValue = ProblemConfiguration.GRAYSCALE_MIN_RANGE;
+				}
+				raster.setSample(x, y, 0, greyscaleValue);
 			}
 		}
 		File imageFile = new File(outputImageFile);
@@ -101,6 +100,21 @@ public class ImageFileHelper {
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 
 		+ "Resulting image stored in: " + outputImageFile);
+	}
+
+	public static int[][] removeBackgroundPixels(int[][] imageGraph) {
+		int[][] result = new int[imageGraph.length][imageGraph[0].length];
+		for (int i = 0; i < imageGraph.length; i++) {
+			for (int j = 0; j < imageGraph[0].length; j++) {
+				if (Math.abs(imageGraph[i][j]
+						- ProblemConfiguration.GRAYSCALE_MIN_RANGE) < ProblemConfiguration.GRAYSCALE_DELTA) {
+					result[i][j] = ProblemConfiguration.ABSENT_PIXEL_FLAG;
+				} else {
+					result[i][j] = imageGraph[i][j];
+				}
+			}
+		}
+		return result;
 	}
 
 	public static int[][] applyFilter(int[][] imageGraph,
@@ -113,7 +127,8 @@ public class ImageFileHelper {
 		int[][] result = new int[imageGraph.length][imageGraph[0].length];
 		for (int i = 0; i < imageGraph.length; i++) {
 			for (int j = 0; j < imageGraph[0].length; j++) {
-				if (backgroundFilterMask[i][j] == ProblemConfiguration.GRAYSCALE_MAX_RANGE / 2) {
+				if (backgroundFilterMask[i][j] == ProblemConfiguration.GRAYSCALE_MAX_RANGE / 2
+						|| backgroundFilterMask[i][j] == ProblemConfiguration.ABSENT_PIXEL_CLUSTER) {
 					result[i][j] = ProblemConfiguration.ABSENT_PIXEL_FLAG;
 				} else {
 					result[i][j] = imageGraph[i][j];
