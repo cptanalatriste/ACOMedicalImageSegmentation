@@ -69,17 +69,7 @@ public class AntColony {
 			if (depositPheromone) {
 				depositPheromoneInAntPath(ant);
 			}
-
-			// TODO(cgavidia): Remove comments later. Can impact negatively
-			// on performance.
-			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-					+ "Solution quality before local search : "
-					+ ant.getPartitionQuality(environment.getImageGraph()));
-			ant.improvePartition(environment.getImageGraph());
 			antCounter++;
-			System.out.println(ACOImageSegmentation.getComputingTimeAsString()
-					+ "Solution quality after local search : "
-					+ ant.getPartitionQuality(environment.getImageGraph()));
 			// TODO(cgavidia): Local search is also omitted. No recording of
 			// best solutions either.
 		}

@@ -87,9 +87,6 @@ public class ACOImageSegmentation {
 		System.out.println(ACOImageSegmentation.getComputingTimeAsString()
 				+ "Starting background filtering process");
 
-		// TODO(cgavidia): Only for testing
-		// int[][] backgroundFilterMask = ACOImageThresholding
-		// .getSegmentedImageAsArray(imageFile, false);
 		int[][] backgroundFilterMask = ACOImageThresholding
 				.getSegmentedImageAsArray(imageFile, true);
 
